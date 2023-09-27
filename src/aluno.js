@@ -23,6 +23,50 @@ function ler(res) {
     });
 }
 
+// Ler UM aluno
+function LerUM(id, res) {
+    const sql = "SELECT * FROM alunos where id = ?";
+    conexao.query(sql, id, (erro, resultado) => {
+        if(resultado === 0){
+            res.status(204).end();
+            return;
+        }
+    
+
+    if(erro){
+        res.status(400).json(erro.code);
+    } else {
+        res.status(200).json(resultado[0]);
+    }
+})
+}
+
+// Atualizar todos/alguns dados de um aluno
+function atualizar(id, aluno, res) {
+    const sql = "UPDATE alunos SET ? WHERE id = ?";
+    conexao.query(sql, [aluno, id], (erro, resultados) => {
+        if (erro) {
+            res.status(400).json(erro.code);
+        } else {
+            res.status(200).json({ "Status" : "Atualizado com sucesso"});
+        }
+        
+    })
+}
+
+// EXCLUIR aluno da base de dados
+function excluir(id, res) {
+    const sql = "DELETE FROM alunos WHERE id = ?"
+
+    conexao.query(sql, id, (erro, resultado) => {
+        if(erro){
+            res.status(400).json(erro.code)
+        } else {
+            res.status(200).json({"Status" : "Aluno excluido" , id})
+        }
+    })
+}
+
 // Inserindo alunos no banco de dados
 function inserir(aluno, res){
     const sql = "INSERT INTO alunos SET ? ";
@@ -31,10 +75,10 @@ function inserir(aluno, res){
         if (erro) {
             res.status(400).json(erro.code);
         } else {
-            res.status(201).json({"Status" : "Aluno inserido"});
+            res.status(201).json({...aluno, id});
             // res.status(201).end();
         }
     })
 }
 
-export {ler, inserir}
+export {ler, inserir, LerUM, atualizar, excluir}

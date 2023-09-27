@@ -1,7 +1,8 @@
 import express from 'express';
-import { inserir, ler } from "./src/aluno.js";
+import { atualizar, inserir, ler, LerUM, excluir } from "./src/aluno.js";
 const app = express();
-const porta = 8080;
+const porta = process.env.PORT || 3306;
+/* permitindo que o servidor aponte a melhor porta ou então, usamos a porta 3306. */
 
 // Adicionando suporte ao formato json
 app.use(express.json())
@@ -24,7 +25,9 @@ app.get('/alunos', (req, res) => {
 
 // EXIBINDO DADOS DE UM ALUNO
 app.get('/alunos/:id', (req, res) => {
-    res.send(`Dados de um alunos`);
+    // res.send(`Dados de um alunos`);
+    const id = parseInt(req.params.id);
+    LerUM(id, res)
 });
 
 // INSERINDO NOVO ALUNO
@@ -37,13 +40,17 @@ app.post('/alunos', (req, res) => {
 
 // ATUALIZANDO DADOS DE UM ALUNO
 app.patch('/alunos/:id', (req, res) => {
-    res.send(`Atualizando dados de UM aluno`)
+    const id = parseInt(req.params.id);
+    const aluno = req.body;
+    atualizar(id, aluno, res)
 });
 
 
 // EXCLUINDO ALUNOS
 app.delete('/alunos/:id', (req, res) => {
-    res.send(`Excluindo alunos`)
+   // res.send(`Excluindo alunos`)
+    const id = parseInt(req.params.id);
+    excluir(id, res)
 });
 
 
